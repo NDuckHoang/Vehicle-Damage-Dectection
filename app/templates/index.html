@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div>
+    <h1>Kiểm tra hư hỏng phương tiện từ ảnh hiện trường</h1>
+    <p>Tải lên một hoặc nhiều ảnh <b>của cùng một trường hợp</b> (nhiều góc chụp). Hệ thống sẽ phát hiện và
+      phân đoạn vùng hư hỏng bằng YOLOv8-Seg, phân loại 7 loại hư hỏng và ước lượng mức độ
+      <span class="badge lv-0">Nhẹ</span> <span class="badge lv-1">Trung bình</span> <span class="badge lv-2">Nặng</span>.</p>
+    <ul class="chips">
+      <li>Móp, lõm</li><li>Trầy sơn</li><li>Vỡ kính</li><li>Mất bộ phận</li><li>Thủng</li><li>Rách</li><li>Bể đèn</li>
+    </ul>
+  </div>
+</section>
+
+<form id="upload-form" class="panel" action="{{ url_for('analyze') }}" method="post" enctype="multipart/form-data">
+  <h2>1. Chọn ảnh</h2>
+  <label id="dropzone" class="dropzone" for="file-input">
+    <input id="file-input" type="file" name="images" accept="image/*" multiple hidden>
+    <div class="dz-icon">⬆</div>
+    <div><b>Kéo thả ảnh vào đây</b> hoặc <u>bấm để chọn</u></div>
+    <div class="muted small">Tối đa {{ max_files }} ảnh · Định dạng: {{ allowed }} · Tổng dung lượng ≤ 60MB</div>
+  </label>
+  <div id="preview" class="thumbs"></div>
+  <p id="file-count" class="muted small"></p>
+
+  <h2>2. Thông tin trường hợp</h2>
+  <div class="form-row">
+    <label class="field">
+      <span>Tên trường hợp (tuỳ chọn)</span>
+      <input type="text" name="case_name" maxlength="100" placeholder="VD: Xe 30A-123.45 – va chạm đuôi xe">
+    </label>
+    <label class="field">
+      <span>Ngưỡng confidence: <b id="conf-value">0.25</b></span>
+      <input id="conf" type="range" name="conf" min="0.05" max="0.9" step="0.05" value="0.25">
+      <small class="muted">Thấp hơn → phát hiện nhiều vùng hơn nhưng dễ báo nhầm.</small>
+    </label>
+  </div>
+  <p class="note">Các ảnh trong một lần tải lên được coi là <b>cùng một trường hợp</b> do bạn chủ động nhóm.
+    Hệ thống cộng dồn kết quả các ảnh và <b>không</b> tự loại bỏ vùng trùng lặp giữa các góc chụp.</p>
+  <button id="submit-btn" class="btn btn-primary" type="submit" disabled>Phân tích</button>
+</form>
+
+{% if cases %}
+<section class="panel">
+  <h2>Trường hợp gần đây</h2>
+  <div class="recent">
+    {% for c in cases %}
+    <a class="recent-item" href="{{ url_for('case', case_id=c.case_id) }}">
+      {% set first = (c.images | selectattr('result', 'defined') | list) %}
+      {% if first %}<img src="{{ url_for('static', filename='results/' ~ c.case_id ~ '/' ~ first[0].result) }}" alt="">{% endif %}
+      <div>
+        <b>{{ c.case_name }}</b>
+        <div class="muted small">{{ c.created_at }} · {{ c.summary.n_images }} ảnh · {{ c.summary.n_regions }} vùng</div>
+        <span class="badge lv-{{ c.summary.level if c.summary.level is not none else 'none' }}">{{ c.summary.level_name }}</span>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<div id="loading" class="loading" hidden>
+  <div class="spinner"></div>
+  <p>Đang phân tích ảnh, vui lòng chờ…</p>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>const MAX_FILES = {{ max_files }};</script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endblock %}

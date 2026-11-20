@@ -1,0 +1,155 @@
+BAO CAO PHAN TICH DATASET VEHIDE (Giai doan 1)
+Python: 3.14.5 | OpenCV: 5.0.0
+Dataset goc: D:\Dataset
+
+======================================================================
+TAP TRAIN
+======================================================================
+File annotation: D:\Dataset\0Train_via_annos.json
+Kieu goc JSON: dict, so ban ghi: 11621
+Cac truong cua ban ghi: {'name': 11621, 'regions': 11621}
+Cac truong cua region : {'all_x': 30046, 'all_y': 30046, 'class': 30046}
+Kieu du lieu truong 'class': {'str': 30046}
+Thu muc anh thuc te: D:\Dataset\image\image
+So anh tren o cung: 11621
+So ban ghi co key khac truong 'name': 0
+So ten anh bi trung trong JSON: 0
+Ten anh khop CHINH XAC voi file: 11621
+Annotation khong co anh       : 0 []
+Anh khong co annotation       : 0 []
+Chi khop khi bo qua hoa/thuong: 0
+So file ten dang hash (khong chua 'image'): 933, trong do co trong JSON: 933
+
+Tong so regions (polygon): 30046
+Regions/anh: min=1, max=20, trung binh=2.59, trung vi=2
+Anh co regions rong (khong hu hong/negative): 0
+Anh khong doc duoc (loi file): 0 []
+Anh JPEG bi cat cut (thieu marker cuoi, van doc duoc): 268 ['02012020_082351image833616.jpg', '04052020_152057image59498.jpg', '04052020_152101image628633.jpg', '04052020_152107image748519.jpg', '11032020_143029image424625.jpg']
+Anh co EXIF xoay 90/270 do: 0 []
+
+Phan bo class (so polygon / so anh chua class):
+  tray_son          12267 polygon     5804 anh
+  mop_lom            4709 polygon     3676 anh
+  rach               4546 polygon     3190 anh
+  mat_bo_phan        2370 polygon     2081 anh
+  be_den             2324 polygon     1990 anh
+  thung              2006 polygon     1570 anh
+  vo_kinh            1824 polygon     1753 anh
+
+Polygon khong hop le: 1064
+  vuot kich thuoc anh: 659
+  toa do am: 443
+  dien tich ~ 0: 1
+    vi du: ('01012020_172204image891741.jpg', 0, 'mat_bo_phan', 'toa do am')
+    vi du: ('01042020_091440image496933.jpg', 0, 'vo_kinh', 'toa do am')
+    vi du: ('01102020_083411image919264.jpg', 0, 'rach', 'vuot kich thuoc anh')
+    vi du: ('01102020_111014image486727.jpg', 0, 'vo_kinh', 'toa do am')
+    vi du: ('01102020_111019image24047.jpg', 0, 'vo_kinh', 'vuot kich thuoc anh')
+    vi du: ('01102020_111038image291215.jpg', 0, 'vo_kinh', 'vuot kich thuoc anh')
+    vi du: ('01102020_135257image420525.jpg', 0, 'vo_kinh', 'vuot kich thuoc anh')
+    vi du: ('01102020_144508image667829.jpg', 1, 'tray_son', 'vuot kich thuoc anh')
+    vi du: ('01112020_083504image543142.jpg', 0, 'vo_kinh', 'vuot kich thuoc anh')
+    vi du: ('01122020_121433image741955.jpg', 0, 'vo_kinh', 'vuot kich thuoc anh')
+  Muc vuot bien (pixel): min=1, trung vi=2, p95=13, max=1228
+  Muc vuot bien (% canh dai anh): trung vi=0.15%, p95=0.94%, max=75.25%
+  So polygon vuot > 5 px: 198
+  So polygon vuot > 20 px: 36
+  So polygon vuot > 50 px: 5
+======================================================================
+TAP VAL
+======================================================================
+File annotation: D:\Dataset\0Val_via_annos.json
+Kieu goc JSON: dict, so ban ghi: 2324
+Cac truong cua ban ghi: {'name': 2324, 'regions': 2324}
+Cac truong cua region : {'all_x': 6035, 'all_y': 6035, 'class': 6035}
+Kieu du lieu truong 'class': {'str': 6035}
+Thu muc anh thuc te: D:\Dataset\validation\validation
+So anh tren o cung: 2324
+So ban ghi co key khac truong 'name': 0
+So ten anh bi trung trong JSON: 0
+Ten anh khop CHINH XAC voi file: 2324
+Annotation khong co anh       : 0 []
+Anh khong co annotation       : 0 []
+Chi khop khi bo qua hoa/thuong: 0
+So file ten dang hash (khong chua 'image'): 175, trong do co trong JSON: 175
+
+Tong so regions (polygon): 6035
+Regions/anh: min=1, max=20, trung binh=2.60, trung vi=2
+Anh co regions rong (khong hu hong/negative): 0
+Anh khong doc duoc (loi file): 0 []
+Anh JPEG bi cat cut (thieu marker cuoi, van doc duoc): 54 ['24032020_094730image64439.jpg', '24032020_140438image435324.jpg', 'Thumbnail02012020_095011image270807.jpg', 'Thumbnail02012020_095022image264427.jpg', 'Thumbnail04032020_095941image305117.jpg']
+Anh co EXIF xoay 90/270 do: 0 []
+
+Phan bo class (so polygon / so anh chua class):
+  tray_son           2380 polygon     1142 anh
+  mop_lom             972 polygon      750 anh
+  rach                963 polygon      659 anh
+  be_den              458 polygon      406 anh
+  mat_bo_phan         448 polygon      402 anh
+  thung               417 polygon      318 anh
+  vo_kinh             397 polygon      380 anh
+
+Polygon khong hop le: 239
+  vuot kich thuoc anh: 153
+  toa do am: 95
+    vi du: ('01042020_091351image21145.jpg', 0, 'vo_kinh', 'toa do am; vuot kich thuoc anh')
+    vi du: ('01102020_135233image760694.jpg', 0, 'vo_kinh', 'vuot kich thuoc anh')
+    vi du: ('02012020_082149image965429.jpg', 0, 'mop_lom', 'vuot kich thuoc anh')
+    vi du: ('02012020_082149image965429.jpg', 1, 'tray_son', 'toa do am')
+    vi du: ('02012020_084441image987642.jpg', 1, 'tray_son', 'vuot kich thuoc anh')
+    vi du: ('02012020_095611image737458.jpg', 0, 'tray_son', 'vuot kich thuoc anh')
+    vi du: ('02012020_095617image948063.jpg', 4, 'tray_son', 'vuot kich thuoc anh')
+    vi du: ('02012020_095705image758065.jpg', 0, 'tray_son', 'vuot kich thuoc anh')
+    vi du: ('02012020_101535image167861.jpg', 0, 'tray_son', 'toa do am')
+    vi du: ('02012020_143101image351228.jpg', 0, 'tray_son', 'toa do am')
+  Muc vuot bien (pixel): min=1, trung vi=2, p95=18, max=67
+  Muc vuot bien (% canh dai anh): trung vi=0.18%, p95=1.13%, max=8.38%
+  So polygon vuot > 5 px: 56
+  So polygon vuot > 20 px: 13
+  So polygon vuot > 50 px: 2
+
+======================================================================
+TONG HOP
+======================================================================
+Anh trung ten giua train va val: 0
+Class co trong train nhung khong co trong val: set()
+Class co trong val nhung khong co trong train: set()
+Tat ca class tim thay (7): ['be_den', 'mat_bo_phan', 'mop_lom', 'rach', 'thung', 'tray_son', 'vo_kinh']
+Truong severity/muc do: KHONG CO trong annotation
+
+Thong ke dien tich polygon (% dien tich anh) theo class:
+               count   mean    std   min   25%    50%    75%     max
+class                                                               
+be_den        2782.0   8.53  12.52  0.00  0.88   3.45  10.75   97.65
+mat_bo_phan   2818.0  17.85  19.75  0.01  2.68  10.61  25.80   99.44
+mop_lom       5681.0   7.44  11.30  0.01  0.99   3.13   8.79   99.92
+rach          5509.0   2.28   4.37  0.00  0.20   0.69   2.38   53.35
+thung         2423.0   1.78   4.12  0.00  0.09   0.31   1.35   49.12
+tray_son     14647.0   2.97   7.53  0.00  0.15   0.54   2.12   99.17
+vo_kinh       2221.0  33.98  31.09  0.01  6.15  24.64  57.46  104.79
+
+So diem moi polygon:
+count    36081.0
+mean        19.2
+std         17.1
+min          3.0
+25%          9.0
+50%         14.0
+75%         24.0
+max        322.0
+
+======================================================================
+KET LUAN VA DE XUAT CHO GIAI DOAN 2
+======================================================================
+1. Ghep anh-nhan: dung ten file CHINH XAC (truong 'name' == ten file tren dia),
+   ke ca anh ten dang hash. Khong can doan/ghep theo thu tu.
+2. Class lay tu truong 'class' cua tung region (ten tieng Viet khong dau).
+   Anh xa sang ten tieng Anh trong mo ta dataset la DE XUAT, can xac nhan:
+     tray_son->Scratch, mop_lom->Dents, rach->Torn, mat_bo_phan->Lost parts,
+     be_den->Broken lights, thung->Punctured, vo_kinh->Broken glass.
+3. Khong co class 'Non-damaged' va khong co anh regions rong -> khong co anh negative.
+4. Khong co nhan severity -> Giai doan 6 phai dung phuong phap rule-based.
+5. Polygon vuot bien chu yeu vai pixel -> clip toa do ve [0, w] x [0, h].
+   Polygon < 3 diem hoac dien tich ~0 sau khi clip -> bo qua va ghi log.
+6. Anh JPEG bi cat cut van doc duoc bang OpenCV -> giu lai, ghi log.
+7. Khong co anh xoay EXIF -> toa do polygon dung truc tiep voi kich thuoc anh.

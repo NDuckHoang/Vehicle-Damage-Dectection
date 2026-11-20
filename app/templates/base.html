@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}VehiDamage – Ước lượng hư hỏng phương tiện{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('index') }}">
+      <span class="logo">VD</span>
+      <span><b>VehiDamage</b><small>Ước lượng hư hỏng phương tiện từ ảnh hiện trường</small></span>
+    </a>
+    <nav><a href="{{ url_for('index') }}">Phân tích mới</a></nav>
+  </header>
+
+  <main class="container">
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+      {% for cat, m in msgs %}<div class="alert alert-{{ cat }}">{{ m }}</div>{% endfor %}
+    {% endwith %}
+
+    {% block content %}
+      {% if not_found %}
+      <section class="panel center">
+        <h2>Không tìm thấy trang</h2>
+        <p class="muted">Trường hợp không tồn tại hoặc đường dẫn không đúng.</p>
+        <a class="btn" href="{{ url_for('index') }}">Về trang chủ</a>
+      </section>
+      {% endif %}
+    {% endblock %}
+  </main>
+
+  <footer class="footer">
+    YOLOv8n-Seg fine-tune trên dataset VehiDE · Mức độ là ước lượng theo tiêu chí thử nghiệm, không phải kết luận giám định.
+  </footer>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

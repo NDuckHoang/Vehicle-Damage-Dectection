@@ -1,0 +1,14 @@
+# YOLOv8-Seg dataset - VehiDE (tao boi convert_via_to_yolo.py)
+path: D:/Dataset/VehicleDamageProject/dataset
+train: images/train
+val: images/val
+
+nc: 7
+names:
+  0: Dent  # mop_lom
+  1: Scratch  # tray_son
+  2: Broken glass  # vo_kinh
+  3: Lost part  # mat_bo_phan
+  4: Punctured  # thung
+  5: Torn  # rach
+  6: Broken light  # be_den

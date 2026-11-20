@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}{{ r.case_name }} – VehiDamage{% endblock %}
+{% block content %}
+{% set s = r.summary %}
+<section class="panel">
+  <div class="result-head">
+    <div>
+      <h1>{{ r.case_name }}</h1>
+      <p class="muted small">Mã {{ r.case_id }} · {{ r.created_at }} · Ngưỡng confidence {{ r.conf_threshold }}</p>
+    </div>
+    <div class="downloads">
+      <a class="btn btn-primary" href="{{ url_for('download', case_id=r.case_id, fmt='html') }}">⬇ Báo cáo (HTML)</a>
+      <a class="btn" href="{{ url_for('download', case_id=r.case_id, fmt='csv') }}">⬇ Bảng vùng (CSV)</a>
+      <a class="btn" href="{{ url_for('download', case_id=r.case_id, fmt='json') }}">⬇ JSON</a>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card card-main lv-bg-{{ s.level if s.level is not none else 'none' }}">
+      <div class="k">Mức độ ước lượng chung</div>
+      <div class="v">{{ s.level_name }}</div>
+    </div>
+    <div class="card"><div class="k">Ảnh hợp lệ / tổng</div><div class="v">{{ s.n_valid_images }} / {{ s.n_images }}</div></div>
+    <div class="card"><div class="k">Ảnh có hư hỏng</div><div class="v">{{ s.n_images_with_damage }}</div></div>
+    <div class="card"><div class="k">Tổng số vùng</div><div class="v">{{ s.n_regions }}</div></div>
+  </div>
+
+  {% if s.damage_types %}
+  <div class="summary-grid">
+    <div>
+      <h3>Loại hư hỏng</h3>
+      {% set maxc = s.damage_types[0].count %}
+      {% for d in s.damage_types %}
+      <div class="bar-row">
+        <span class="dot" style="background: {{ class_colors[d.class] | bgr2hex }}"></span>
+        <span class="bar-label">{{ d.class_vi }}</span>
+        <span class="bar"><span style="width: {{ (d.count / maxc * 100) | round }}%; background: {{ class_colors[d.class] | bgr2hex }}"></span></span>
+        <b>{{ d.count }}</b>
+      </div>
+      {% endfor %}
+    </div>
+    <div>
+      <h3>Số vùng theo mức độ</h3>
+      {% for name, n in s.regions_by_level.items() %}
+      <div class="bar-row">
+        <span class="badge lv-{{ loop.index0 }}">{{ name }}</span>
+        <span class="bar"><span class="lv-{{ loop.index0 }}" style="width: {{ (n / s.n_regions * 100) | round if s.n_regions else 0 }}%"></span></span>
+        <b>{{ n }}</b>
+      </div>
+      {% endfor %}
+      {% if s.worst_image %}<p class="muted small">Ảnh có mức cao nhất: <a href="#img-{{ s.worst_image }}">ảnh {{ s.worst_image }}</a></p>{% endif %}
+    </div>
+  </div>
+  {% endif %}
+  <p class="note">{{ s.note }}</p>
+</section>
+
+{% for im in r.images %}
+<section class="panel shot" id="img-{{ im.index }}">
+  <div class="shot-head">
+    <h2>Góc chụp {{ im.index }} <span class="muted small">{{ im.filename }}</span></h2>
+    <span class="badge lv-{{ im.severity.level if im.severity.level is not none else 'none' }}">{{ im.severity.level_name }}</span>
+  </div>
+
+  {% if im.error %}
+    <div class="alert alert-error">{{ im.error }}</div>
+  {% else %}
+    {% for w in im.quality_warnings %}<div class="alert alert-warning">⚠ {{ w }}</div>{% endfor %}
+    <div class="compare">
+      <figure>
+        <img class="zoomable" src="{{ url_for('static', filename='results/' ~ r.case_id ~ '/' ~ im.original) }}" alt="Ảnh gốc">
+        <figcaption>Ảnh gốc · {{ im.width }}×{{ im.height }} px</figcaption>
+      </figure>
+      <figure>
+        <img class="zoomable" src="{{ url_for('static', filename='results/' ~ r.case_id ~ '/' ~ im.result) }}" alt="Kết quả phân đoạn">
+        <figcaption>Segmentation mask · tổng diện tích hư hỏng {{ '%.2f'|format(im.total_area_ratio * 100) }}% ảnh</figcaption>
+      </figure>
+    </div>
+
+    {% if im.regions %}
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Loại hư hỏng</th><th>Confidence</th><th>Diện tích mask</th><th>Mức độ</th><th>Căn cứ ước lượng</th></tr></thead>
+        <tbody>
+        {% for g in im.regions %}
+          <tr>
+            <td>{{ g.id }}</td>
+            <td><span class="dot" style="background: {{ class_colors[g.class] | bgr2hex }}"></span>{{ g.class_vi }} <span class="muted small">({{ g.class }})</span></td>
+            <td><div class="conf"><span style="width: {{ (g.confidence * 100) | round }}%"></span></div>{{ '%.0f'|format(g.confidence * 100) }}%</td>
+            <td>{{ '{:,}'.format(g.area_px) }} px<br><span class="muted small">{{ '%.2f'|format(g.area_ratio * 100) }}% ảnh</span></td>
+            <td><span class="badge lv-{{ g.severity.level }}">{{ g.severity.level_name }}</span></td>
+            <td class="small">{{ g.severity.reason }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+    <ul class="reasons small">{% for x in im.severity.reasons %}<li>{{ x }}</li>{% endfor %}</ul>
+  {% endif %}
+</section>
+{% endfor %}
+
+<div id="lightbox" class="lightbox" hidden><img alt=""></div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/main.js') }}"></script>{% endblock %}

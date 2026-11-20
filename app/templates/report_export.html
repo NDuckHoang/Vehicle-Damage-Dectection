@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Báo cáo hư hỏng – {{ r.case_name }}</title>
+<style>
+  :root { --ink:#1b2430; --muted:#5b6675; --line:#dde3ea; --bg:#f5f7fa;
+          --light:#2e9e5b; --medium:#e09b1a; --heavy:#d23c3c; }
+  * { box-sizing:border-box; }
+  body { font-family:"Segoe UI",Arial,sans-serif; color:var(--ink); background:var(--bg); margin:0; padding:24px; }
+  .page { max-width:1050px; margin:auto; background:#fff; padding:32px; border-radius:10px; }
+  h1 { margin:0 0 4px; font-size:24px; } h2 { font-size:18px; margin:28px 0 10px; border-bottom:2px solid var(--line); padding-bottom:6px; }
+  .meta { color:var(--muted); font-size:13px; }
+  .note { background:#fff8e6; border-left:4px solid var(--medium); padding:10px 14px; font-size:13px; margin:16px 0; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; }
+  .card { border:1px solid var(--line); border-radius:8px; padding:12px; }
+  .card .k { font-size:12px; color:var(--muted); } .card .v { font-size:20px; font-weight:600; margin-top:4px; }
+  .badge { display:inline-block; padding:2px 10px; border-radius:12px; color:#fff; font-size:13px; font-weight:600; }
+  .lv-0 { background:var(--light); } .lv-1 { background:var(--medium); } .lv-2 { background:var(--heavy); } .lv-none { background:#8a94a3; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top; } th { background:#eef2f6; }
+  .imgs { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .imgs img { width:100%; border-radius:6px; border:1px solid var(--line); }
+  .imgs figcaption { font-size:12px; color:var(--muted); text-align:center; }
+  .shot { page-break-inside:avoid; margin-bottom:24px; }
+  .warn { color:#9a5b00; font-size:13px; } .err { color:var(--heavy); }
+  @media print { body { background:#fff; padding:0; } .page { padding:0; } }
+  @media (max-width:640px) { .imgs { grid-template-columns:1fr; } .page { padding:16px; } }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Báo cáo ước lượng hư hỏng phương tiện</h1>
+  <div class="meta">{{ r.case_name }} · Mã: {{ r.case_id }} · Tạo lúc {{ r.created_at }} · Ngưỡng confidence {{ r.conf_threshold }}</div>
+
+  <div class="note"><b>Lưu ý:</b> {{ r.summary.note }}</div>
+
+  <h2>Tổng hợp trường hợp</h2>
+  {% set s = r.summary %}
+  <div class="grid">
+    <div class="card"><div class="k">Mức độ ước lượng chung</div>
+      <div class="v"><span class="badge lv-{{ s.level if s.level is not none else 'none' }}">{{ s.level_name }}</span></div></div>
+    <div class="card"><div class="k">Số ảnh (hợp lệ / tổng)</div><div class="v">{{ s.n_valid_images }} / {{ s.n_images }}</div></div>
+    <div class="card"><div class="k">Ảnh có hư hỏng</div><div class="v">{{ s.n_images_with_damage }}</div></div>
+    <div class="card"><div class="k">Tổng số vùng hư hỏng</div><div class="v">{{ s.n_regions }}</div></div>
+  </div>
+
+  {% if s.damage_types %}
+  <table>
+    <tr><th>Loại hư hỏng</th><th>Số vùng (cộng dồn các ảnh)</th></tr>
+    {% for d in s.damage_types %}<tr><td>{{ d.class_vi }} ({{ d.class }})</td><td>{{ d.count }}</td></tr>{% endfor %}
+  </table>
+  <p class="meta">Số vùng theo mức: {% for k, v in s.regions_by_level.items() %}{{ k }}: {{ v }}{% if not loop.last %} · {% endif %}{% endfor %}
+    {% if s.worst_image %} · Ảnh có mức cao nhất: ảnh {{ s.worst_image }}{% endif %}</p>
+  {% endif %}
+
+  <h2>Chi tiết từng góc chụp</h2>
+  {% for im in r.images %}
+  <div class="shot">
+    <h3>Ảnh {{ im.index }}: {{ im.filename }}
+      <span class="badge lv-{{ im.severity.level if im.severity.level is not none else 'none' }}">{{ im.severity.level_name }}</span></h3>
+    {% if im.error %}
+      <p class="err">{{ im.error }}</p>
+    {% else %}
+      <p class="meta">Kích thước {{ im.width }}×{{ im.height }} px · Tổng diện tích hư hỏng {{ '%.2f'|format(im.total_area_ratio * 100) }}% ảnh</p>
+      {% for w in im.quality_warnings %}<p class="warn">⚠ {{ w }}</p>{% endfor %}
+      <div class="imgs">
+        <figure><img src="{{ images[im.index].original }}" alt="Ảnh gốc {{ im.index }}"><figcaption>Ảnh gốc</figcaption></figure>
+        <figure><img src="{{ images[im.index].result }}" alt="Kết quả {{ im.index }}"><figcaption>Vùng hư hỏng phát hiện</figcaption></figure>
+      </div>
+      {% if im.regions %}
+      <table>
+        <tr><th>#</th><th>Loại</th><th>Confidence</th><th>Diện tích</th><th>Mức độ</th><th>Căn cứ</th></tr>
+        {% for g in im.regions %}
+        <tr><td>{{ g.id }}</td><td>{{ g.class_vi }} ({{ g.class }})</td><td>{{ '%.0f'|format(g.confidence * 100) }}%</td>
+            <td>{{ '{:,}'.format(g.area_px) }} px ({{ '%.2f'|format(g.area_ratio * 100) }}%)</td>
+            <td><span class="badge lv-{{ g.severity.level }}">{{ g.severity.level_name }}</span></td>
+            <td>{{ g.severity.reason }}</td></tr>
+        {% endfor %}
+      </table>
+      {% endif %}
+      <p class="meta">{% for x in im.severity.reasons %}{{ x }}{% if not loop.last %}. {% endif %}{% endfor %}</p>
+    {% endif %}
+  </div>
+  {% endfor %}
+
+  <p class="meta">Hệ thống: YOLOv8n-Seg fine-tune trên dataset VehiDE · Mức độ: luật rule-based (diện tích, loại, số lượng vùng).</p>
+</div>
+</body>
+</html>

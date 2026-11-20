@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phiếu đánh giá hư hỏng xe</title>
+<style>
+  :root { --ink:#18212d; --muted:#667085; --line:#e3e8ef; --bg:#f3f5f9; --primary:#1f5eff;
+          --s0:#8a94a3; --s1:#2e9e5b; --s2:#e09b1a; --s3:#d23c3c; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:"Segoe UI",system-ui,Arial,sans-serif; background:var(--bg); color:var(--ink); line-height:1.5; }
+  .wrap { max-width:980px; margin:0 auto; padding:16px; }
+  .panel { background:#fff; border-radius:12px; padding:20px; margin-bottom:16px; box-shadow:0 1px 3px rgba(16,24,40,.08); }
+  h1 { font-size:22px; margin:0 0 8px; } h2 { font-size:18px; margin:0 0 10px; } h3 { font-size:15px; margin:14px 0 8px; }
+  .muted { color:var(--muted); } .small { font-size:13px; }
+  .guide { width:100%; border-collapse:collapse; font-size:14px; margin:8px 0; }
+  .guide td { border:1px solid var(--line); padding:6px 8px; vertical-align:top; }
+  .guide td:first-child { white-space:nowrap; font-weight:600; }
+  input[type=text], textarea { width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px; font:inherit; }
+  .btn { display:inline-block; padding:10px 18px; border-radius:8px; border:1px solid var(--line); background:#fff;
+         font:inherit; font-weight:600; cursor:pointer; color:var(--ink); }
+  .btn-primary { background:var(--primary); border-color:var(--primary); color:#fff; }
+  .btn:disabled { opacity:.45; cursor:not-allowed; }
+  .progress { height:8px; background:#e6eaf0; border-radius:4px; overflow:hidden; margin:8px 0 14px; }
+  .progress span { display:block; height:100%; background:var(--primary); transition:width .2s; }
+  .photo { width:100%; border-radius:8px; border:1px solid var(--line); display:block; }
+  .choices { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:10px 0; }
+  .choice { padding:12px 6px; border:2px solid var(--line); border-radius:10px; background:#fff; font:inherit;
+            font-weight:600; cursor:pointer; text-align:center; }
+  .choice.sel[data-v="0"] { border-color:var(--s0); background:#eef0f3; }
+  .choice.sel[data-v="1"] { border-color:var(--s1); background:#e8f6ee; }
+  .choice.sel[data-v="2"] { border-color:var(--s2); background:#fdf3e0; }
+  .choice.sel[data-v="3"] { border-color:var(--s3); background:#fbe9e9; }
+  .scores { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin:10px 0; }
+  .score { padding:10px 4px; border:2px solid var(--line); border-radius:10px; background:#fff; font:inherit; cursor:pointer; text-align:center; }
+  .score b { display:block; font-size:20px; } .score.sel { border-color:var(--primary); background:#eef3ff; }
+  .choice:disabled, .score:disabled { cursor:default; color:#a0a8b5; }
+  .choice.sel:disabled { color:var(--ink); }  /* lua chon da khoa van hien ro */
+  .locked { background:#f6f8fb; border-radius:8px; padding:8px 12px; font-size:14px; }
+  .sys { border-left:4px solid var(--primary); padding-left:12px; margin-top:14px; }
+  table.reg { width:100%; border-collapse:collapse; font-size:13px; margin-top:6px; }
+  table.reg td, table.reg th { border-bottom:1px solid var(--line); padding:5px 6px; text-align:left; }
+  .nav { display:flex; justify-content:space-between; gap:8px; margin-top:16px; }
+  .err { color:var(--s3); font-size:14px; }
+  textarea.csv { height:140px; font-family:Consolas,monospace; font-size:12px; }
+  [hidden] { display:none !important; }
+  @media (max-width:600px) { .choices { grid-template-columns:1fr 1fr; } .panel { padding:14px; } .score { padding:8px 2px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- MAN HINH 1: huong dan -->
+  <section id="intro" class="panel">
+    <h1>Phiếu đánh giá chủ quan: hư hỏng phương tiện</h1>
+    <p>Cảm ơn bạn đã tham gia! Bạn sẽ xem <b><span id="n-items"></span> ảnh</b> xe bị hư hỏng. Mỗi ảnh gồm 2 bước:</p>
+    <ol>
+      <li><b>Bước 1:</b> chỉ xem <b>ảnh gốc</b> và chọn <b>mức độ hư hỏng</b> theo cảm nhận của bạn. Sau khi xác nhận, bạn <b>không sửa được</b> nữa.</li>
+      <li><b>Bước 2:</b> xem <b>kết quả máy phát hiện</b> (vùng tô màu) và <b>chấm điểm 1–5</b> cho mức độ chính xác của máy.</li>
+    </ol>
+    <h3>Gợi ý mức độ hư hỏng</h3>
+    <table class="guide">
+      <tr><td>Không hư hỏng</td><td>Không thấy hư hỏng nào.</td></tr>
+      <tr><td>Nhẹ</td><td>Hư hỏng nhỏ trên bề mặt, chủ yếu ảnh hưởng thẩm mỹ; có thể đánh bóng hoặc sơn dặm.</td></tr>
+      <tr><td>Trung bình</td><td>Cần gò, sơn lại một vài chi tiết hoặc thay chi tiết nhỏ; xe vẫn dùng bình thường.</td></tr>
+      <tr><td>Nặng</td><td>Cần thay bộ phận lớn, biến dạng nhiều, hoặc ảnh hưởng an toàn khi vận hành.</td></tr>
+    </table>
+    <h3>Thang điểm chất lượng phát hiện (Bước 2)</h3>
+    <table class="guide">
+      <tr><td>5 – Rất tốt</td><td>Phát hiện đủ các vùng hư hỏng, đúng loại, vùng tô khớp với hư hỏng.</td></tr>
+      <tr><td>4 – Tốt</td><td>Đúng phần lớn; lệch nhỏ về ranh giới hoặc thiếu chi tiết nhỏ.</td></tr>
+      <tr><td>3 – Trung bình</td><td>Đúng một phần; bỏ sót hoặc nhầm loại đáng kể.</td></tr>
+      <tr><td>2 – Kém</td><td>Phần lớn sai hoặc bỏ sót.</td></tr>
+      <tr><td>1 – Rất kém</td><td>Sai hoàn toàn: không thấy hư hỏng rõ ràng, hoặc báo hư hỏng ở chỗ không hư hỏng.</td></tr>
+    </table>
+    <p class="small muted">Không có đáp án đúng hay sai. Hãy đánh giá độc lập, không trao đổi với người khác trong lúc chấm.
+      Câu trả lời được tự lưu tạm trên trình duyệt; nếu lỡ đóng trang, mở lại và nhập đúng tên để tiếp tục.</p>
+    <label for="rater">Họ tên hoặc biệt danh của bạn</label>
+    <input id="rater" type="text" maxlength="40" placeholder="VD: Nguyễn Văn A">
+    <p id="intro-err" class="err" hidden>Vui lòng nhập tên.</p>
+    <p><button id="start" class="btn btn-primary">Bắt đầu</button></p>
+  </section>
+
+  <!-- MAN HINH 2: cham tung anh -->
+  <section id="rate" class="panel" hidden>
+    <div class="muted small"><span id="who"></span> · Ảnh <b id="pos"></b></div>
+    <div class="progress"><span id="bar"></span></div>
+
+    <h2>Bước 1 – Mức độ hư hỏng theo bạn</h2>
+    <img id="img-orig" class="photo" alt="Ảnh gốc">
+    <div id="sev-choices" class="choices">
+      <button class="choice" data-v="0">Không hư hỏng</button>
+      <button class="choice" data-v="1">Nhẹ</button>
+      <button class="choice" data-v="2">Trung bình</button>
+      <button class="choice" data-v="3">Nặng</button>
+    </div>
+    <button id="confirm" class="btn btn-primary" disabled>Xác nhận mức độ → xem kết quả máy</button>
+    <div id="sev-locked" class="locked" hidden></div>
+
+    <div id="step2" hidden>
+      <h2 style="margin-top:22px">Bước 2 – Chấm kết quả máy phát hiện</h2>
+      <img id="img-res" class="photo" alt="Kết quả máy">
+      <div class="sys">
+        <div>Máy ước lượng mức độ: <b id="sys-level"></b></div>
+        <table class="reg"><thead><tr><th>#</th><th>Loại hư hỏng</th><th>Độ tin cậy</th><th>Diện tích</th></tr></thead>
+          <tbody id="sys-regions"></tbody></table>
+      </div>
+      <p style="margin-bottom:0">Máy phát hiện <b>chính xác</b> đến mức nào?</p>
+      <div id="score-choices" class="scores">
+        <button class="score" data-v="1"><b>1</b>Rất kém</button>
+        <button class="score" data-v="2"><b>2</b>Kém</button>
+        <button class="score" data-v="3"><b>3</b>Trung bình</button>
+        <button class="score" data-v="4"><b>4</b>Tốt</button>
+        <button class="score" data-v="5"><b>5</b>Rất tốt</button>
+      </div>
+      <label for="comment" class="small">Nhận xét (không bắt buộc)</label>
+      <textarea id="comment" rows="2" maxlength="300" placeholder="VD: bỏ sót vết trầy ở cửa sau"></textarea>
+    </div>
+
+    <div class="nav">
+      <button id="prev" class="btn">← Ảnh trước</button>
+      <button id="next" class="btn btn-primary" disabled>Ảnh tiếp →</button>
+    </div>
+  </section>
+
+  <!-- MAN HINH 3: hoan thanh -->
+  <section id="done" class="panel" hidden>
+    <h1>Hoàn thành!</h1>
+    <p>Bạn đã chấm xong <b id="done-n"></b> ảnh. Hãy <b>tải file kết quả</b> và gửi lại cho người tổ chức.</p>
+    <p><button id="download" class="btn btn-primary">⬇ Tải file kết quả (CSV)</button>
+       <button id="back" class="btn">Xem lại</button></p>
+    <p class="small muted">Nếu không tải được (ví dụ khi mở trong Zalo/Messenger), hãy mở file bằng Chrome/Edge,
+      hoặc <b>sao chép toàn bộ nội dung bên dưới</b> rồi gửi lại.</p>
+    <textarea id="csv-text" class="csv" readonly></textarea>
+  </section>
+</div>
+
+<script>
+const ITEMS = {{ items_json|safe }};
+const SEV_NAMES = ["Không hư hỏng", "Nhẹ", "Trung bình", "Nặng"];
+const SCORE_NAMES = {1: "Rất kém", 2: "Kém", 3: "Trung bình", 4: "Tốt", 5: "Rất tốt"};
+
+let rater = "";
+let idx = 0;
+// answers[i] = {severity: 0..3|null, confirmed: bool, score: 1..5|null, comment: "", time: ""}
+let answers = ITEMS.map(() => ({severity: null, confirmed: false, score: null, comment: "", time: ""}));
+
+const $ = (id) => document.getElementById(id);
+
+// ---------- Luu tam tren trinh duyet (co the khong dung duoc o che do an danh) ----------
+function storeKey() { return "vd_subjective_" + rater.toLowerCase(); }
+function save() { try { localStorage.setItem(storeKey(), JSON.stringify({idx, answers})); } catch (e) {} }
+function load() {
+  try {
+    const d = JSON.parse(localStorage.getItem(storeKey()) || "null");
+    if (d && d.answers && d.answers.length === ITEMS.length) { answers = d.answers; idx = d.idx || 0; }
+  } catch (e) {}
+}
+
+// ---------- Hanh dong (dung chung cho giao dien va tu kiem thu) ----------
+function start(name) {
+  rater = name.trim();
+  if (!rater) { $("intro-err").hidden = false; return false; }
+  load();
+  $("intro").hidden = true; $("rate").hidden = false;
+  render(); return true;
+}
+function chooseSeverity(v) { if (!answers[idx].confirmed) { answers[idx].severity = v; render(); } }
+function confirmSeverity() {
+  const a = answers[idx];
+  if (a.severity === null || a.confirmed) return;
+  a.confirmed = true; save(); render();
+}
+function chooseScore(v) {
+  const a = answers[idx];
+  if (!a.confirmed) return;
+  a.score = v; a.time = new Date().toISOString(); save(); render();
+}
+function go(step) {
+  answers[idx].comment = $("comment").value.trim();
+  save();
+  if (step > 0 && idx === ITEMS.length - 1) { finish(); return; }
+  idx = Math.min(Math.max(idx + step, 0), ITEMS.length - 1);
+  render(); window.scrollTo(0, 0);
+}
+
+// ---------- Ve giao dien cho anh hien tai ----------
+function render() {
+  const it = ITEMS[idx], a = answers[idx];
+  $("who").textContent = "Người chấm: " + rater;
+  $("pos").textContent = (idx + 1) + "/" + ITEMS.length + " (" + it.image_id + ")";
+  $("bar").style.width = (answers.filter((x) => x.score !== null).length / ITEMS.length * 100) + "%";
+  $("img-orig").src = it.original;
+
+  document.querySelectorAll("#sev-choices .choice").forEach((b) => {
+    b.classList.toggle("sel", Number(b.dataset.v) === a.severity);
+    b.disabled = a.confirmed;
+  });
+  $("confirm").hidden = a.confirmed;
+  $("confirm").disabled = a.severity === null;
+  $("sev-locked").hidden = !a.confirmed;
+  if (a.confirmed) $("sev-locked").textContent = "Bạn đã chọn: " + SEV_NAMES[a.severity] + " (đã khóa)";
+
+  // Chi hien ket qua may SAU KHI nguoi cham da xac nhan muc do (danh gia mu)
+  $("step2").hidden = !a.confirmed;
+  if (a.confirmed) {
+    $("img-res").src = it.result;
+    $("sys-level").textContent = it.system_level;
+    const tb = $("sys-regions"); tb.innerHTML = "";
+    if (!it.regions.length) {
+      tb.innerHTML = '<tr><td colspan="4">Máy không phát hiện vùng hư hỏng nào</td></tr>';
+    }
+    it.regions.forEach((g, i) => {
+      const tr = document.createElement("tr");
+      [i + 1, g.class_vi + " (" + g.class + ")", Math.round(g.confidence * 100) + "%", g.area_pct + "% ảnh"]
+        .forEach((v) => { const td = document.createElement("td"); td.textContent = v; tr.appendChild(td); });
+      tb.appendChild(tr);
+    });
+    document.querySelectorAll("#score-choices .score").forEach((b) => {
+      b.classList.toggle("sel", Number(b.dataset.v) === a.score);
+    });
+    $("comment").value = a.comment;
+  }
+  $("prev").disabled = idx === 0;
+  $("next").disabled = a.score === null;
+  $("next").textContent = idx === ITEMS.length - 1 ? "Hoàn thành ✓" : "Ảnh tiếp →";
+}
+
+// ---------- Xuat CSV ----------
+function csvCell(v) { v = String(v ?? ""); return /[",\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+function buildCSV() {
+  const rows = [["rater", "image_id", "human_severity", "human_severity_name", "detection_score", "comment", "rated_at"]];
+  ITEMS.forEach((it, i) => {
+    const a = answers[i];
+    rows.push([rater, it.image_id, a.severity, SEV_NAMES[a.severity] ?? "", a.score ?? "", a.comment, a.time]);
+  });
+  return rows.map((r) => r.map(csvCell).join(",")).join("\r\n");
+}
+function finish() {
+  const missing = answers.findIndex((a) => a.score === null);
+  if (missing >= 0) { idx = missing; render(); alert("Còn ảnh " + (missing + 1) + " chưa chấm xong."); return; }
+  $("rate").hidden = true; $("done").hidden = false;
+  $("done-n").textContent = ITEMS.length;
+  $("csv-text").value = buildCSV();
+}
+function download() {
+  const blob = new Blob(["﻿" + buildCSV()], {type: "text/csv;charset=utf-8"}); // BOM: Excel doc dung tieng Viet
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "danh_gia_" + rater.replace(/[^\p{L}\p{N}]+/gu, "_") + ".csv";
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+// ---------- Gan su kien ----------
+$("n-items").textContent = ITEMS.length;
+$("start").onclick = () => start($("rater").value);
+$("rater").addEventListener("keydown", (e) => { if (e.key === "Enter") start($("rater").value); });
+document.querySelectorAll("#sev-choices .choice").forEach((b) => b.onclick = () => chooseSeverity(Number(b.dataset.v)));
+$("confirm").onclick = confirmSeverity;
+document.querySelectorAll("#score-choices .score").forEach((b) => b.onclick = () => chooseScore(Number(b.dataset.v)));
+$("prev").onclick = () => go(-1);
+$("next").onclick = () => go(1);
+$("download").onclick = download;
+$("back").onclick = () => { $("done").hidden = true; $("rate").hidden = false; idx = 0; render(); };
+
+// ---------- Tu kiem thu (chi chay khi mo file voi duoi #selftest; nguoi cham khong dung) ----------
+if (location.hash === "#selftest") {
+  start("Kiem thu");
+  ITEMS.forEach((_, i) => {
+    chooseScore(5);                          // chua xac nhan muc do -> phai bi bo qua
+    chooseSeverity(i % 4); confirmSeverity();
+    chooseSeverity(3);                       // da khoa -> khong duoc doi
+    chooseScore((i % 5) + 1);
+    $("comment").value = i === 0 ? 'Có dấu phẩy, "ngoặc kép"\nvà xuống dòng' : "";
+    go(1);
+  });
+  document.body.setAttribute("data-selftest", $("done").hidden ? "fail" : "done");
+  document.body.setAttribute("data-csv", buildCSV()); // de doc ket qua bang --dump-dom
+}
+</script>
+</body>
+</html>

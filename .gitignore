@@ -1,0 +1,25 @@
+# Moi truong Python
+.venv/
+__pycache__/
+*.pyc
+
+# Du lieu chuyen doi (tao lai bang scripts/convert_via_to_yolo.py) - rat lon
+dataset/images/
+dataset/labels/
+*.cache
+
+# Model: pretrained tu tai lai; ket qua train lon -> chi giu best.pt neu can
+models/pretrained/
+models/trained/**/weights/last.pt
+models/trained/smoke_test/
+models/trained/resume_test/
+# Anh ghep tu anh VehiDE do Ultralytics sinh ra khi train (giu lai bieu do .png va results.csv)
+models/trained/**/train_batch*.jpg
+models/trained/**/val_batch*.jpg
+
+# Ket qua sinh ra khi chay
+results/
+app/static/results/
+reports/dataset_stats.csv
+# Phieu cham chua anh VehiDE (tao lai bang scripts/subjective_prepare.py)
+subjective/phieu_danh_gia.html

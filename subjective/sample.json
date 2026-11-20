@@ -1,0 +1,217 @@
+{
+  "seed": 2026,
+  "conf": 0.25,
+  "items": [
+    {
+      "image_id": "A01",
+      "filename": "12102020_111951image524539.jpg",
+      "system_level": "Nặng",
+      "system_reasons": [
+        "Mức cao nhất trong 1 vùng: Nặng"
+      ],
+      "regions": [
+        {
+          "class": "Lost part",
+          "class_vi": "Mất bộ phận",
+          "confidence": 0.861,
+          "area_pct": 15.76,
+          "level": "Nặng"
+        }
+      ]
+    },
+    {
+      "image_id": "A02",
+      "filename": "31012020_153821image255918.jpg",
+      "system_level": "Nặng",
+      "system_reasons": [
+        "Mức cao nhất trong 1 vùng: Nặng"
+      ],
+      "regions": [
+        {
+          "class": "Broken light",
+          "class_vi": "Bể đèn",
+          "confidence": 0.395,
+          "area_pct": 59.11,
+          "level": "Nặng"
+        }
+      ]
+    },
+    {
+      "image_id": "A03",
+      "filename": "21102020_133447image708774.jpg",
+      "system_level": "Trung bình",
+      "system_reasons": [
+        "Mức cao nhất trong 1 vùng: Trung bình"
+      ],
+      "regions": [
+        {
+          "class": "Broken glass",
+          "class_vi": "Vỡ kính",
+          "confidence": 0.9,
+          "area_pct": 24.98,
+          "level": "Trung bình"
+        }
+      ]
+    },
+    {
+      "image_id": "A04",
+      "filename": "06102020_085457image814255.jpg",
+      "system_level": "Trung bình",
+      "system_reasons": [
+        "Mức cao nhất trong 4 vùng: Trung bình"
+      ],
+      "regions": [
+        {
+          "class": "Punctured",
+          "class_vi": "Thủng",
+          "confidence": 0.742,
+          "area_pct": 0.67,
+          "level": "Trung bình"
+        },
+        {
+          "class": "Scratch",
+          "class_vi": "Trầy sơn",
+          "confidence": 0.379,
+          "area_pct": 1.7,
+          "level": "Nhẹ"
+        },
+        {
+          "class": "Broken light",
+          "class_vi": "Bể đèn",
+          "confidence": 0.343,
+          "area_pct": 2.72,
+          "level": "Trung bình"
+        },
+        {
+          "class": "Torn",
+          "class_vi": "Rách",
+          "confidence": 0.25,
+          "area_pct": 0.29,
+          "level": "Nhẹ"
+        }
+      ]
+    },
+    {
+      "image_id": "A05",
+      "filename": "13012020_084351image745797.jpg",
+      "system_level": "Nhẹ",
+      "system_reasons": [
+        "Mức cao nhất trong 1 vùng: Nhẹ"
+      ],
+      "regions": [
+        {
+          "class": "Scratch",
+          "class_vi": "Trầy sơn",
+          "confidence": 0.273,
+          "area_pct": 0.74,
+          "level": "Nhẹ"
+        }
+      ]
+    },
+    {
+      "image_id": "A06",
+      "filename": "17072020_101552image44331.jpg",
+      "system_level": "Trung bình",
+      "system_reasons": [
+        "Mức cao nhất trong 1 vùng: Trung bình"
+      ],
+      "regions": [
+        {
+          "class": "Broken glass",
+          "class_vi": "Vỡ kính",
+          "confidence": 0.516,
+          "area_pct": 9.12,
+          "level": "Trung bình"
+        }
+      ]
+    },
+    {
+      "image_id": "A07",
+      "filename": "02012020_113859image759800.jpg",
+      "system_level": "Nhẹ",
+      "system_reasons": [
+        "Mức cao nhất trong 3 vùng: Nhẹ"
+      ],
+      "regions": [
+        {
+          "class": "Scratch",
+          "class_vi": "Trầy sơn",
+          "confidence": 0.834,
+          "area_pct": 0.64,
+          "level": "Nhẹ"
+        },
+        {
+          "class": "Scratch",
+          "class_vi": "Trầy sơn",
+          "confidence": 0.274,
+          "area_pct": 0.26,
+          "level": "Nhẹ"
+        },
+        {
+          "class": "Scratch",
+          "class_vi": "Trầy sơn",
+          "confidence": 0.257,
+          "area_pct": 0.75,
+          "level": "Nhẹ"
+        }
+      ]
+    },
+    {
+      "image_id": "A08",
+      "filename": "Thumbnailz1694878963926_af44ed80b2db18d994df638306edec09.jpg",
+      "system_level": "Không phát hiện hư hỏng",
+      "system_reasons": [
+        "Model không phát hiện vùng hư hỏng nào (với ngưỡng confidence hiện tại)."
+      ],
+      "regions": []
+    },
+    {
+      "image_id": "A09",
+      "filename": "22102020_141117image652241.jpg",
+      "system_level": "Nặng",
+      "system_reasons": [
+        "Mức cao nhất trong 1 vùng: Nặng"
+      ],
+      "regions": [
+        {
+          "class": "Broken glass",
+          "class_vi": "Vỡ kính",
+          "confidence": 0.641,
+          "area_pct": 32.61,
+          "level": "Nặng"
+        }
+      ]
+    },
+    {
+      "image_id": "A10",
+      "filename": "02012020_163852image26225.jpg",
+      "system_level": "Nhẹ",
+      "system_reasons": [
+        "Mức cao nhất trong 3 vùng: Nhẹ"
+      ],
+      "regions": [
+        {
+          "class": "Scratch",
+          "class_vi": "Trầy sơn",
+          "confidence": 0.389,
+          "area_pct": 0.5,
+          "level": "Nhẹ"
+        },
+        {
+          "class": "Scratch",
+          "class_vi": "Trầy sơn",
+          "confidence": 0.286,
+          "area_pct": 2.15,
+          "level": "Nhẹ"
+        },
+        {
+          "class": "Scratch",
+          "class_vi": "Trầy sơn",
+          "confidence": 0.273,
+          "area_pct": 0.74,
+          "level": "Nhẹ"
+        }
+      ]
+    }
+  ]
+}
